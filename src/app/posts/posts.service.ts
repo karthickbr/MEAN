@@ -20,10 +20,10 @@ export class PostsService {
    return this.postUpdated.asObservable();
  }
            // post: Post
-addPost(title: string, content: string) {
+ addPost(title: string, content: string) {
   const post: Post = {title, content};
   this.posts.push(post);
-  this.postUpdated.next([...this.posts]);
+  this.postUpdated.next([...this.posts]); // copy of posts
 }
 
 }
