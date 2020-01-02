@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 import {MatInputModule,
         MatCardModule,
         MatButtonModule,
@@ -34,7 +35,8 @@ import { PostListComponent } from './posts/post-list/post-list/post-list.compone
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
-    MatExpansionModule
+    MatExpansionModule,
+    HttpClientModule
   ],
   providers: [], // services are added here in the provider or otherwise use @injectable in service file at root level
   bootstrap: [AppComponent]
