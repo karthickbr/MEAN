@@ -2,12 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var app = express();
-var cors = require('cors');
+// var cors = require('cors');
 var Post = require("./models/post");
 // mongodb password   :  hQXO60PezF3wNkgk
 // mongodb username : mean
 // shell command :   mongo "mongodb+srv://cluster0-ytzpd.mongodb.net/test"  --username mean
-app.use(cors());
+// app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -46,10 +46,15 @@ const post = new Post({
   content: req.body.content
 })
 console.log(post);
-post.save();
-res.status(201).json({
-  message: "Post Added Successfully..."
+post.save().then(createdPost => {
+console.log(createdPost);
+  res.status(201).json({
+    message: "Post Added Successfully...",
+    postId: createdPost._id
+  });
+
 });
+
 });
 
 app.get('/api/posts',(req, res,next) => {
@@ -63,7 +68,7 @@ Post.find()
 });
 
 app.delete('/api/posts/:id',(req,res,next) => {
-  Post.deleteOne({_id: req.params.id}).then(result => {
+  Post.deleteOne({_id:req.params.id}).then(result => {
     console.log(result);
     res.status(200).json({
       message: "Deleted Successfully..."
