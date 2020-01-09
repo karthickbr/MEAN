@@ -28,7 +28,7 @@ import { PostListComponent } from './posts/post-list/post-list/post-list.compone
   ],
   imports: [
     BrowserModule,                    // angular modules are added here
-    AppRoutingModule,
+    AppRoutingModule,                 // app routing module are added here
     FormsModule,
     BrowserAnimationsModule,
     MatInputModule,
