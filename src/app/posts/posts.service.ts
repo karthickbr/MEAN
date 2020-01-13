@@ -17,11 +17,10 @@ export class PostsService {
 
 
 
- getPosts() {
+getPosts() {
    // return [...this.posts]; // it is the copy of posts
    this.http
    .get<{message: string , posts: any}>('http://localhost:3000/api/posts'
-
    )
    .pipe(map((postData) => {     // operators-> map
      return postData.posts.map(post => {
@@ -40,14 +39,14 @@ export class PostsService {
 
 
 
- getPostUpdateListner() {
+getPostUpdateListner() {
    return this.postUpdated.asObservable();
  }
 
 
 
            // post: Post
- addPost(title: string, content: string) {
+addPost(title: string, content: string) {
   const post: Post = {id: null, title, content};
   this.http.post<{message: string, postId: string}>('http://localhost:3000/api/posts', post)
   .subscribe(responseData => {
@@ -58,8 +57,21 @@ export class PostsService {
   this.postUpdated.next([...this.posts]); // copy of posts
   });
 }
+updatePost(id: string, title: string, content: string) {
 
- deletePost(postId: string) {
+  const post: Post = { id , title, content};
+  this.http.put('http://localhost:3000/api/posts/' + id, post)
+  .subscribe(response => {
+    console.log(response);
+  });
+
+}
+
+getPost(id: string) {
+  return {...this.posts.find( p => p.id === id )};
+}
+
+deletePost(postId: string) {
   this.http.delete('http://localhost:3000/api/posts/' + postId)
   .subscribe(() => {
     console.log('Deleted !');
