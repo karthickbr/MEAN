@@ -4,13 +4,14 @@ import { Subject, from } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({  // instead of importing service in app.module .. we use this injectable features in service file
   providedIn: 'root'
 })
 export class PostsService {
 
-  constructor(public http: HttpClient) { }
+  constructor(public http: HttpClient, public router: Router) { }
 
   private posts: Post[] = []; // initiall its empty
   private postUpdated  = new Subject<Post[]>();
@@ -55,20 +56,32 @@ addPost(title: string, content: string) {
   post.id = id;
   this.posts.push(post);
   this.postUpdated.next([...this.posts]); // copy of posts
+  this.router.navigate(['/']);
   });
 }
+
 updatePost(id: string, title: string, content: string) {
 
   const post: Post = { id , title, content};
-  this.http.put('http://localhost:3000/api/posts/' + id, post)
+  this.http
+  .put('http://localhost:3000/api/posts/' + id, post)
   .subscribe(response => {
-    console.log(response);
+    // console.log(response);
+    const updatedPosts = [...this.posts];
+    const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
+    updatedPosts[oldPostIndex] = post;
+    this.posts = updatedPosts;
+    this.postUpdated.next([...this.posts]);
+    this.router.navigate(['/']);
+
   });
 
 }
 
 getPost(id: string) {
-  return {...this.posts.find( p => p.id === id )};
+ // return {...this.posts.find( p => p.id === id )};
+ return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
+
 }
 
 deletePost(postId: string) {
