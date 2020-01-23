@@ -2,42 +2,54 @@
 <mat-card>
   <mat-spinner *ngIf='isLoading'></mat-spinner>
 
-<form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
+<form [formGroup]="form" (submit)="onSavePost()"  *ngIf="!isLoading">
 
   <mat-form-field>
     <input
     matInput type="text"
-    [ngModel]="post?.title"
-    name="title"
-    placeholder="Post Title"
-    required minlength="4"
-    #title="ngModel">
+    formControlName="title"
+    placeholder="Post Title" >
 
-  <mat-error *ngIf="title.invalid">Please Enter the Post Title...</mat-error>
+  <mat-error *ngIf="form.get('title').invalid">Please Enter the Post Title...</mat-error>
   </mat-form-field>
 
   <mat-form-field>
     <textarea
-    matInput rows="4"
-    [ngModel]="post?.content"
-    name="content"
-    placeholder="Post Content"
-    required
-    #content="ngModel">
-  </textarea>
+    matInput
+    rows="4"
+    formControlName= "content"
+    placeholder="Post Content" >  </textarea>
 
-    <mat-error *ngIf="content.invalid">Please Enter the Post Content...</mat-error>
+    <mat-error *ngIf="form.get('content').invalid">Please Enter the Post Content...</mat-error>
   <!-- <button mat-raised-button color="warn">Warn</button> -->
   </mat-form-field>
 
   <button
    mat-raised-button
    type="submit"
-   color = "primary"
-  >Save post</button>
+   color = "primary">Save post</button>
+
+  <span>&nbsp;</span>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type ="button"
+    [routerLink]= "['/']">Cancel</button>
+
+  <span>&nbsp;</span>
+
+  <!-- <div> -->
+  <button mat-stroked-button
+  type ="button"
+  (click)="filepicker.click()">Pick Image</button>
+
+  <input type="file" #filepicker (change)="onImagePicked($event)">
+
+
+  <!-- </div> -->
+
 </form>
-
-
 </mat-card>
 
 <hr>
