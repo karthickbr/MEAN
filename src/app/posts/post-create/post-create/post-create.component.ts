@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {PostsService} from '../../posts.service';
 import { from } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -17,9 +18,12 @@ export class PostCreateComponent implements OnInit {
   // postCreated = new EventEmitter<Post>();
   mode = 'create';
   private postId: string;
+  imagePreview: string;
   post: Post;
   form: FormGroup;
   isLoading = false;
+  reader: any;
+
 
   constructor(public postsService: PostsService, public route: ActivatedRoute) { }
 
@@ -36,7 +40,7 @@ export class PostCreateComponent implements OnInit {
         }),
 
         image: new FormControl(null, {
-          validators: [Validators.required]
+          validators: [Validators.required], asyncValidators: [mimeType]
         })
 
       });
@@ -52,7 +56,8 @@ export class PostCreateComponent implements OnInit {
             this.post = {
               id: postData._id,
               title: postData.title ,
-              content: postData.content
+              content: postData.content,
+              imagePath: null
             };
             this.isLoading = false;
             this.form.setValue({
@@ -69,14 +74,19 @@ export class PostCreateComponent implements OnInit {
   }
 
   onImagePicked(event: Event) {
+
        const file = (event.target as HTMLInputElement).files[0];
        this.form.patchValue({ image: file });
        this.form.get('image').updateValueAndValidity();
-       console.log(this.form);
-       console.log(file);
+      //  console.log(this.form);
+     //  console.log(file);
+
+       this.reader = new FileReader();
+       this.reader.onload = () => {
+       this.imagePreview = this.reader.result;
+      };
+       this.reader.readAsDataURL(file);
   }
-
-
 
 
 onSavePost() {
@@ -84,29 +94,23 @@ onSavePost() {
   if (this.form.invalid) {
     return;
   }
-  // const post: Post = {
-  //     title : form.value.title,
-  //     content: form.value.content
-  //   };
-  // this.postCreated.emit(post);
   this.isLoading = true;
 
   if (this.mode === 'create') {
 
-    this.postsService.addPost(this.form.value.title, this.form.value.content);
+    this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
     this.isLoading = false;
   } else {
-
     this.postsService.updatePost(
       this.postId,
       this.form.value.title,
-      this.form.value.content
+      this.form.value.content,
       );
 
   }
 
   this.form.reset();
-  // alert('Post Added');
+
 }
 
 }
