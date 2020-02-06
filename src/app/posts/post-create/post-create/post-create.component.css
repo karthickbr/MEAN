@@ -15,11 +15,11 @@ input[type="file"] {
   visibility: hidden;
 }
 
-image-preview {
+.image-preview {
   margin: 1rem 0;
   height: 5rem;
 }
 
-image-preview img {
+.image-preview img {
   height: 100%;
 }

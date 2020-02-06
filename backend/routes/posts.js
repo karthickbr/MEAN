@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
       if(isValid) {
         error = null;
       }
-      cb(error,'/backend/images');
+      cb(error,'/PROJECTS/Test/Angular/mean/backend/images');
     },
 
   filename: (req,file,cb) => {
@@ -30,6 +30,8 @@ const storage = multer.diskStorage({
 router.post('', multer({storage:storage}).single('image'),(req, res, next) => {
   //const post = req.body;
   const url = req.protocol + '://'+ req.get("host");
+  console.log('url', url);
+
   const post = new Post({
 
       title: req.body.title,
@@ -43,7 +45,7 @@ router.post('', multer({storage:storage}).single('image'),(req, res, next) => {
  //  console.log(createdPost);
     res.status(201).json({
       message: "Post Added Successfully...",
-      postId: {
+      post: {
         id: createdPost._id,
         ...createdPost // short form
         // title: createdPost.title,
@@ -65,21 +67,40 @@ router.post('', multer({storage:storage}).single('image'),(req, res, next) => {
     })
   })
 
-  router.put('/:id',(req,res,next) => {
+  router.put('/:id', multer({storage:storage}).single('image'), (req,res,next) => {
+
+    let imagePath = req.body.imagePath;
+
+     if(req.file) {
+      const url = req.protocol + "://" + req.get("host");
+      imagePath =  url + "/images/" + req.file.filename;
+    }
+
     const post = new Post ({
       _id: req.body.id,
       title: req.body.title,
-      content: req.body.content
+      content: req.body.content,
+      imagePath: imagePath
     });
-    Post.updateOne({_id:req.params.id}, post).then(result => {
+      console.log("Post", post);
+    Post.updateOne({_id: req.params.id}, post).then(result => {
       // console.log(result);
       res.status(200).json({message: 'Post Updated Successfully'});
     })
   })
 
   router.get('',(req, res,next) => {
-  Post.find()
-  .then(documents => {
+
+    const pageSize = +req.query.pagesize; // + for numeric value from string
+    const currentPage = +req.query.page;
+    const postQuery = Post.find();
+
+    if(pageSize && currentPage) {
+
+      postQuery.skip( pageSize * (currentPage -1)).limit(pageSize);
+    }
+
+    postQuery.find().then(documents => {
     res.status(200).json({
       message: "The Post Fetched Succesfully",
       posts: documents

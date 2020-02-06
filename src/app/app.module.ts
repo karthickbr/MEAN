@@ -9,7 +9,8 @@ import {MatInputModule,
         MatButtonModule,
         MatToolbarModule,
         MatExpansionModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatPaginatorModule
       } from '@angular/material';
 
 
@@ -38,7 +39,8 @@ import { PostListComponent } from './posts/post-list/post-list/post-list.compone
     MatToolbarModule,
     MatExpansionModule,
     HttpClientModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatPaginatorModule
   ],
   providers: [], // services are added here in the provider or otherwise use @injectable in service file at root level
   bootstrap: [AppComponent]

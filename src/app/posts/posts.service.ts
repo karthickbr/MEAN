@@ -70,31 +70,43 @@ addPost(title: string, content: string, image: File) {
   });
 }
 
-updatePost(id: string, title: string, content: string) {
+updatePost(id: string, title: string, content: string, image: File | string) {
+   let postData: Post | FormData;
 
-  const post: Post = { id , title, content, imagePath: null};
-  this.http
-  .put('http://localhost:3000/api/posts/' + id, post)
-  .subscribe(response => {
-    console.log(response);
+   if (typeof(image) === 'object') {
+   postData =  new FormData();
+   postData.append('id', id);
+   postData.append('title', title);
+   postData.append('content', content);
+   postData.append('image', image , title); // image and image name sent to the multer filename function
+
+ } else {
+
+    postData = { id , title , content , imagePath: image  };
+ }
+   this.http
+    .put('http://localhost:3000/api/posts/' + id, postData)
+    .subscribe(response => {
+    // console.log(response);
     const updatedPosts = [...this.posts];
-    const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
+    const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
+    const post: Post = { id, title , content, imagePath: ''};
     updatedPosts[oldPostIndex] = post;
     this.posts = updatedPosts;
     this.postUpdated.next([...this.posts]);
     this.router.navigate(['/']);
-
   });
 
 }
 
-getPost(id: string) {
+
+   getPost(id: string) {
  // return {...this.posts.find( p => p.id === id )};
- return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
+ return this.http.get<{_id: string, title: string, content: string , imagePath: string}>('http://localhost:3000/api/posts/' + id);
 
 }
 
-deletePost(postId: string) {
+   deletePost(postId: string) {
   this.http.delete('http://localhost:3000/api/posts/' + postId)
   .subscribe(() => {
     console.log('Deleted !');
