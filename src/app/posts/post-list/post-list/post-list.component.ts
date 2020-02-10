@@ -15,9 +15,10 @@ import {PostsService} from 'src/app/posts/posts.service';
 export class PostListComponent implements OnInit , OnDestroy {
 
   isLoading = false;
-  totalPosts = 10;
+  totalPosts = 0;
   postPerPage = 2;
-  pageSizeOptions = [2, 5, 10];
+  currentPage = 1;
+  pageSizeOptions = [1, 2, 5, 10];
   constructor(public postsService: PostsService) { }
 
   // posts = [
@@ -32,20 +33,27 @@ export class PostListComponent implements OnInit , OnDestroy {
   ngOnInit() {
     // this.posts = this.postsService.getPosts();
     this.isLoading = true;
-    this.postsService.getPosts();
+    this.postsService.getPosts(this.postPerPage, this.currentPage);
     this.postsSub =  this.postsService.getPostUpdateListner()
-    .subscribe((posts: Post[]) => {
+    .subscribe((postData: { posts: Post[], postCount: number}) => {   // postCount value from postservice file ... shoulsd be the same name
       this.isLoading = false;
-      this.posts = posts;
+      this.posts = postData.posts;
+      this.totalPosts = postData.postCount;
     });
    }
 
    onChangedPage(pageData: PageEvent) {
-    console.log(pageData);
+    this.isLoading = true;
+    this.currentPage = pageData.pageIndex + 1 ;
+    this.postPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postPerPage, this.currentPage);
    }
 
    onDelete(postId: string) {
-     this.postsService.deletePost(postId);
+       this.isLoading = true;
+       this.postsService.deletePost(postId).subscribe(() => {
+       this.postsService.getPosts(this.postPerPage, this.currentPage );
+     });
    }
 
    ngOnDestroy() {

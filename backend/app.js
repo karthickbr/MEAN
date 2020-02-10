@@ -2,7 +2,12 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+
+
 const postRouters = require('./routes/posts');
+const userRouters = require('./routes/user');
+
+
 var app = express();
 // var cors = require('cors');
 
@@ -42,6 +47,10 @@ app.use((req,res,next) => {
   next();
 });
 
+
+
 app.use("/api/posts", postRouters);
+app.use("/api/user", userRouters);
+
 
 module.exports = app;
