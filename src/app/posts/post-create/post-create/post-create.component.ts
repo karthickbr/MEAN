@@ -100,7 +100,7 @@ onSavePost() {
   if (this.mode === 'create') {
 
     this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
-    this.isLoading = false;
+    this.isLoading = true;
   } else {
     this.postsService.updatePost(
       this.postId,
