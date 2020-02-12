@@ -11,9 +11,10 @@ const userRouters = require('./routes/user');
 var app = express();
 // var cors = require('cors');
 
-// mongodb password   :  hQXO60PezF3wNkgk
-// mongodb username : mean
-// shell command :   mongo "mongodb+srv://cluster0-ytzpd.mongodb.net/test"  --username mean
+// mongodb password :   hQXO60PezF3wNkgk
+// mongodb username :   mean
+
+// shell command    :   mongo "mongodb+srv://cluster0-ytzpd.mongodb.net/test"  --username mean
 // app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -37,7 +38,7 @@ app.use((req,res,next) => {
 
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
 
   res.setHeader(

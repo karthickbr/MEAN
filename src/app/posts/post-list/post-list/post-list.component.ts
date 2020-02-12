@@ -4,6 +4,7 @@ import {PageEvent} from '@angular/material';
 
 import {Post} from 'src/app/posts/post.model';
 import {PostsService} from 'src/app/posts/posts.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 
 
@@ -19,7 +20,7 @@ export class PostListComponent implements OnInit , OnDestroy {
   postPerPage = 2;
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
-  constructor(public postsService: PostsService) { }
+  constructor(public postsService: PostsService, private authService: AuthService) { }
 
   // posts = [
   //   {title: 'The first post', content: 'The is the first post'},
@@ -28,7 +29,10 @@ export class PostListComponent implements OnInit , OnDestroy {
   //   ];
 
   posts: Post [] = [];
+  userIsAuthenticated = false;
+
   private postsSub: Subscription;
+  private authStatusSub: Subscription;
 
   ngOnInit() {
     // this.posts = this.postsService.getPosts();
@@ -39,6 +43,10 @@ export class PostListComponent implements OnInit , OnDestroy {
       this.isLoading = false;
       this.posts = postData.posts;
       this.totalPosts = postData.postCount;
+    });
+    this.userIsAuthenticated = this.authService.getIsAuth();
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(isAutheticated => {
+      this.userIsAuthenticated = isAutheticated;
     });
    }
 
@@ -58,6 +66,7 @@ export class PostListComponent implements OnInit , OnDestroy {
 
    ngOnDestroy() {
     this.postsSub.unsubscribe();
+    this.authStatusSub.unsubscribe();
    }
 
 }

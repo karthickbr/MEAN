@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule , FormsModule} from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {MatInputModule,
         MatCardModule,
         MatButtonModule,
@@ -20,6 +20,7 @@ import { HeaderComponent } from './header/header/header.component';
 import { PostListComponent } from './posts/post-list/post-list/post-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { AuthInterceptor } from './auth/auth-interceptor';
 // import { PostsService } from './posts/posts.service';
 
 
@@ -47,7 +48,11 @@ import { SignupComponent } from './auth/signup/signup.component';
     MatProgressSpinnerModule,
     MatPaginatorModule
   ],
-  providers: [], // services are added here in the provider or otherwise use @injectable in service file at root level
+  providers: [{
+               provide: HTTP_INTERCEPTORS,
+               useClass: AuthInterceptor,
+               multi: true
+              }], // services are added here in the provider or otherwise use @injectable in service file at root level
   bootstrap: [AppComponent]
 })
 export class AppModule { }
