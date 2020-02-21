@@ -15,8 +15,10 @@ var app = express();
 // mongodb username :   mean
 
 // shell command    :   mongo "mongodb+srv://cluster0-ytzpd.mongodb.net/test"  --username mean
+
 // app.use(cors());
 app.use(bodyParser.json());
+mongoose.set('useCreateIndex', true);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use("/images", express.static(path.join("backend/images")));
 
@@ -28,7 +30,7 @@ mongoose.connect("mongodb+srv://mean:hQXO60PezF3wNkgk@cluster0-ytzpd.mongodb.net
   console.log("Connection Failed...");
 })
 
-app.use((req,res,next) => {
+app.use((req, res, next) => {
   console.log('In The middleware..');
   next();
 });
@@ -47,7 +49,6 @@ app.use((req,res,next) => {
     );
   next();
 });
-
 
 
 app.use("/api/posts", postRouters);

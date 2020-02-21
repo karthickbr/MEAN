@@ -25,14 +25,14 @@ getPosts(postPerPage: number, currentPage: number) {
    .get<{message: string , posts: any, maxPosts: number}>('http://localhost:3000/api/posts' + queryParms)
    .pipe(map((postData) => {     // operators-> map
      return { posts: postData.posts.map(post => {
-       return { title: post.title, content: post.content, id: post._id, imagePath: post.imagePath  };
+       return { title: post.title, content: post.content, id: post._id, imagePath: post.imagePath, creator: post.creator };
      }),
      maxPosts: postData.maxPosts
     };
    }))
    .subscribe((transformedPostData) => {
      this.posts = transformedPostData.posts;
-
+     console.log(transformedPostData);
      this.postUpdated.next({
        posts: [...this.posts],
        postCount: transformedPostData.maxPosts
@@ -72,7 +72,7 @@ addPost(title: string, content: string, image: File) {
 updatePost(id: string, title: string, content: string, image: File | string) {
    let postData: Post | FormData;
 
-   if (typeof(image) === 'object') {
+   if (typeof(image) === 'object') {  // if new image is uploaded...
    postData =  new FormData();
    postData.append('id', id);
    postData.append('title', title);
@@ -81,7 +81,7 @@ updatePost(id: string, title: string, content: string, image: File | string) {
 
  } else {
 
-    postData = { id , title , content , imagePath: image  };
+    postData = { id , title , content , imagePath: image , creator: null };
  }
    this.http
     .put('http://localhost:3000/api/posts/' + id, postData)
@@ -101,13 +101,13 @@ updatePost(id: string, title: string, content: string, image: File | string) {
 
    getPost(id: string) {
  // return {...this.posts.find( p => p.id === id )};
- return this.http.get<{_id: string, title: string, content: string , imagePath: string}>('http://localhost:3000/api/posts/' + id);
+ return this.http.
+ get<{_id: string, title: string, content: string , imagePath: string , creator: string}>('http://localhost:3000/api/posts/' + id);
 
 }
 
    deletePost(postId: string) {
-    return this.http
-    .delete('http://localhost:3000/api/posts/' + postId);
+    return this.http.delete('http://localhost:3000/api/posts/' + postId);
 
 }
 

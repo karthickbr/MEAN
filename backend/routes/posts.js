@@ -31,17 +31,17 @@ const storage = multer.diskStorage({
 router.post('', checkAuth, multer({storage:storage}).single('image'),(req, res, next) => {
   //const post = req.body;
   const url = req.protocol + '://'+ req.get("host");
-  console.log('url', url);
+  // console.log('url', url);
 
   const post = new Post({
 
       title: req.body.title,
       content: req.body.content,
-      imagePath: url + "/images/" + req.file.filename
-
+      imagePath: url + "/images/" + req.file.filename,
+      creator: req.userData.userId
     });
 
-  console.log(post);
+
   post.save().then(createdPost => {
  //  console.log(createdPost);
     res.status(201).json({
@@ -81,14 +81,22 @@ router.post('', checkAuth, multer({storage:storage}).single('image'),(req, res, 
       _id: req.body.id,
       title: req.body.title,
       content: req.body.content,
-      imagePath: imagePath
+      imagePath: imagePath,
+      creator: req.userData.userId
     });
-      console.log("Post", post);
-    Post.updateOne({_id: req.params.id}, post).then(result => {
-      // console.log(result);
-      res.status(200).json({message: 'Post Updated Successfully'});
+      // console.log("Post", post);
+    Post.updateOne({_id: req.params.id, creator: req.userData.userId}, post).then(result => {
+      console.log(result);
+      if (result.nModified > 0) {
+        res.status(200).json({message: 'Post Updated Successfully'});
+        }
+        else {
+          res.status(401).json({message: 'Not Auth to Edit the Post..'});
+        }
+
     })
   })
+
 
   router.get('', (req, res,next) => {
 
@@ -113,11 +121,14 @@ router.post('', checkAuth, multer({storage:storage}).single('image'),(req, res, 
   });
 
   router.delete('/:id', checkAuth, (req,res,next) => {
-    Post.deleteOne({_id:req.params.id}).then(result => {
+    Post.deleteOne({_id:req.params.id, creator: req.userData.userId}).then(result => {
       console.log(result);
-      res.status(200).json({
-        message: "Deleted Successfully..."
-      });
+      if(result.n > 0) {
+        res.status(200).json({ message: "Deleted Successfully..." });
+      }
+      else {
+        res.status(401).json({ message: "Not Auth to Delete the Post.. " });
+      }
     });
   });
 
