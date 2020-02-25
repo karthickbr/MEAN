@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const postRouters = require('./routes/posts');
 const userRouters = require('./routes/user');
+const csvRouters = require('./routes/csvapi');
 
 
 var app = express();
@@ -21,6 +22,8 @@ app.use(bodyParser.json());
 mongoose.set('useCreateIndex', true);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use("/images", express.static(path.join("backend/images")));
+
+// app.use("/middleware,", express.static(path.join("middleware")));
 
 mongoose.connect("mongodb+srv://mean:hQXO60PezF3wNkgk@cluster0-ytzpd.mongodb.net/node-angular?retryWrites=true&w=majority",{ useUnifiedTopology: true ,useNewUrlParser: true })
 .then(() => {
@@ -53,6 +56,7 @@ app.use((req,res,next) => {
 
 app.use("/api/posts", postRouters);
 app.use("/api/user", userRouters);
+app.use("/api/csv", csvRouters);
 
 
 module.exports = app;
