@@ -1,4 +1,4 @@
-UserName,FirstName,LastName,Display Name,JobTitle,Department,OfficePhone,MobilePhone,Fax,Address,City,State,ZIP,Country
+UserName,FirstName,LastName,DisplayName,JobTitle,Department,OfficePhone,MobilePhone,Fax,Address,City,State,ZIP,Country
 chris@contoso.com,Chris,Green,Chris Green,IT Manager,Information Technology,123-555-1211,123-555-6641,123-555-9821,1 Microsoft way,Redmond,Wa,98052,United States
 ben@contoso.com,Ben,Andrews,Ben Andrews,IT Manager,Information Technology,123-555-1212,123-555-6642,123-555-9822,1 Microsoft way,Redmond,Wa,98052,United States
 david@contoso.com,David,Longmuir,David Longmuir,IT Manager,Information Technology,123-555-1213,123-555-6643,123-555-9823,1 Microsoft way,Redmond,Wa,98052,United States
